@@ -8,8 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api_sge.Controllers
 {
-    [Authorize(Roles="Admin")]
-    [Authorize(Roles="Parceiro")]
+    [Authorize(Roles="Admin, Parceiro")]
     [ApiController]
     [Route("[controller]")]
     public class MercadoriaController : ControllerBase

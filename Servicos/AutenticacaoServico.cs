@@ -103,13 +103,16 @@ namespace api_sge.Servicos
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.UsuarioCodigo.ToString()),
-                new Claim(ClaimTypes.Name, usuario.Login),
-                new Claim(ClaimTypes.Role, "Parceiro")
+                new Claim(ClaimTypes.Name, usuario.Login)
             };
 
             if (usuario.Admin)
             {
                 claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+            }
+            else
+            {
+                claims.Add(new Claim(ClaimTypes.Role, "Parceiro"));
             }
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
