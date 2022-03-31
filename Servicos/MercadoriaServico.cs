@@ -68,13 +68,22 @@ namespace api_sge.Servicos
 
             try
             {
-                Mercadoria mercadoria = await _context.Mercadorias.FirstOrDefaultAsync(c => c.MercadoriaCodigo == mercadoriaCodigo); 
+                Mercadoria mercadoria = await _context.Mercadorias.Include(m => m.Entregas)
+                                                                  .ThenInclude(e => e.Localizacoes)
+                                                                  .FirstOrDefaultAsync(c => c.MercadoriaCodigo == mercadoriaCodigo); 
                 if (mercadoria == null)
                 {
                     resposta.Mensagem = "Mercadoria não encontrada!";
                     return resposta;
                 }
 
+                List<Entrega> entregas = mercadoria.Entregas;
+                foreach (List<Localizacao> localizacoes in entregas.Select(e => e.Localizacoes).ToList())
+                {
+                    _context.RemoveRange(localizacoes);
+                }
+
+                _context.Entregas.RemoveRange(entregas);
                 _context.Mercadorias.Remove(mercadoria);
                 await _context.SaveChangesAsync();
                     

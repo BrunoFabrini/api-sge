@@ -128,13 +128,15 @@ namespace api_sge.Servicos
 
             try
             {
-                Entrega entrega = await _context.Entregas.FirstOrDefaultAsync(c => c.EntregaCodigo == EntregaCodigo); 
+                Entrega entrega = await _context.Entregas.Include(e => e.Localizacoes)
+                                                         .FirstOrDefaultAsync(c => c.EntregaCodigo == EntregaCodigo); 
                 if (entrega == null)
                 {
                     resposta.Mensagem = "Entrega não encontrada!";
                     return resposta;
                 }
 
+                _context.Localizacoes.RemoveRange(entrega.Localizacoes);
                 _context.Entregas.Remove(entrega);
                 await _context.SaveChangesAsync();
                     
